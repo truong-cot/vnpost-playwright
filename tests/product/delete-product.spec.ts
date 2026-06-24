@@ -21,11 +21,11 @@ test.describe('Product Deletion Flows', () => {
       'SP-002-1781773924936'
     ];
 
-    // Step 1: Admin đăng nhập vào hệ thống
+    // Bước 1: Admin đăng nhập vào hệ thống
     await loginPage.login(ENV.TEST_USERNAME, ENV.TEST_PASSWORD);
     await selectShopPage.selectShop('Tổng công ty Bưu Điện Việt Nam');
 
-    // Step 2: Click chọn "Sản phẩm" -> "Sản phẩm"
+    // Bước 2: Click chọn "Sản phẩm" -> "Sản phẩm"
     await dashboardPage.navigateToProducts();
 
     let skuToDelete = '';
@@ -39,7 +39,7 @@ test.describe('Product Deletion Flows', () => {
         skuToDelete = sku;
         break;
       }
-      // Clear search input before next try
+      // Xóa dữ liệu ô tìm kiếm trước lần thử tiếp theo
       await productPage.searchSkuInput.fill('');
       await productPage.searchSkuInput.press('Enter');
       await page.waitForTimeout(500);
@@ -72,7 +72,7 @@ test.describe('Product Deletion Flows', () => {
       await productPage.searchBySku(skuToDelete);
     }
 
-    // Step 3: Tại dòng sản phẩm cần chỉnh sửa: Click chọn "Thao tác" -> "Xóa"
+    // Bước 3: Tại dòng sản phẩm cần chỉnh sửa: Click chọn "Thao tác" -> "Xóa"
     const productRow = page.locator('tr').filter({ hasText: skuToDelete }).first();
     await expect(productRow).toBeVisible();
 

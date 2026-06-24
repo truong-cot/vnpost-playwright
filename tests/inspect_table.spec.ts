@@ -6,7 +6,7 @@ import { ProductPage } from '../src/pages/product.page';
 import { ENV } from '../src/utils/env.config';
 
 test('inspect unit conversion row HTML scoped to dialog', async ({ page }) => {
-  test.setTimeout(120000); // 120 seconds
+  test.setTimeout(120000); // 120 giây
 
   const loginPage = new LoginPage(page);
   const selectShopPage = new SelectShopPage(page);
@@ -28,7 +28,7 @@ test('inspect unit conversion row HTML scoped to dialog', async ({ page }) => {
 
   const dialog = page.locator('[role="dialog"]');
 
-  // 1. Fill basic info
+  // 1. Điền thông tin cơ bản
   await productPage.fill(productPage.nameInput, productName);
   await productPage.click(productPage.categorySelect);
   await productPage.categorySelect.fill(categoryName);
@@ -46,58 +46,58 @@ test('inspect unit conversion row HTML scoped to dialog', async ({ page }) => {
 
   await productPage.fill(productPage.unitInput, unitName);
 
-  // 2. Add conversion units
+  // 2. Thêm đơn vị quy đổi
   const addBtn = dialog.locator('button:has-text("Thêm đơn vị quy đổi")');
   await addBtn.click();
   await page.waitForTimeout(500);
   
-  // Row 1 inputs (index 0 in table body)
+  // Điền dòng 1 (chỉ mục 0 trong body bảng)
   const row0 = dialog.locator('.ant-table-row').nth(0);
   await row0.locator('input[placeholder="Nhập tên đơn vị"]').fill('lốc');
   await row0.locator('input[placeholder="Nhập số lượng"]').fill('6');
-  // SKU Row 1
+  // SKU Dòng 1
   const row0Sku = `${baseSku}-lon`;
   await row0.locator('input[placeholder="Nhập SKU"]').fill(row0Sku);
-  // Barcode Row 1 auto-gen
+  // Barcode dòng 1 tự tạo
   await row0.getByRole('button', { name: 'setting' }).click();
   const barcode0Val = await row0.locator('input[placeholder="Nhập Barcode"]').inputValue();
   console.log('Row 0 auto-generated barcode:', barcode0Val);
 
-  // Add Row 2
+  // Thêm Dòng 2
   await addBtn.click();
   await page.waitForTimeout(500);
   const row1 = dialog.locator('.ant-table-row').nth(1);
   await row1.locator('input[placeholder="Nhập tên đơn vị"]').fill('thùng');
   await row1.locator('input[placeholder="Nhập số lượng"]').fill('4');
   
-  // Select "lốc" for row 1 unit ( Đơn vị quy đổi gốc )
+  // Chọn "lốc" làm Đơn vị quy đổi gốc cho dòng 2
   const selectUnitOrigin = row1.getByRole('combobox');
   await selectUnitOrigin.click();
   
-  // Wait for option to be visible and click it
+  // Chờ option hiển thị và click chọn
   const locOption = page.locator('.ant-select-item-option').filter({ hasText: 'lốc' }).first();
   await locOption.waitFor({ state: 'visible' });
   await locOption.click();
 
-  // SKU Row 2
+  // SKU Dòng 2
   const row1Sku = `${baseSku}-thung`;
   await row1.locator('input[placeholder="Nhập SKU"]').fill(row1Sku);
-  // Barcode Row 2 auto-gen
+  // Barcode dòng 2 tự tạo
   await row1.getByRole('button', { name: 'setting' }).click();
   const barcode1Val = await row1.locator('input[placeholder="Nhập Barcode"]').inputValue();
   console.log('Row 1 auto-generated barcode:', barcode1Val);
 
-  // 3. Confirm creation
+  // 3. Xác nhận tạo mới
   await productPage.click(productPage.confirmButton);
 
-  // Verify success message
+  // Xác nhận thông báo thành công
   const successMsg = page.locator('.ant-message-success, .ant-notification-notice').filter({ hasText: 'Thêm thành công' });
   await expect(successMsg).toBeVisible();
 
-  // Wait for the drawer to close
+  // Chờ drawer đóng lại
   await expect(dialog).not.toBeVisible();
 
-  // 4. Search and open detail
+  // 4. Tìm kiếm và mở chi tiết
   await productPage.searchBySku(baseSku);
 
   const productRow = page.locator('tr').filter({ hasText: baseSku }).first();
@@ -108,20 +108,20 @@ test('inspect unit conversion row HTML scoped to dialog', async ({ page }) => {
   await expect(productRow).toContainText(categoryName);
   await expect(productRow).toContainText('Kích hoạt');
 
-  // Open detail
+  // Mở chi tiết
   await productRow.locator('button').first().click();
   
-  // Wait for detail drawer to open
+  // Chờ drawer chi tiết hiển thị
   const detailDrawer = page.locator('[role="dialog"], .ant-drawer').filter({ hasText: 'Chi tiết sản phẩm' }).first();
   await expect(detailDrawer).toBeVisible();
-  await page.waitForTimeout(3000); // Wait for animations
+  await page.waitForTimeout(3000); // Chờ hiệu ứng animation hoàn tất
 
-  // Dump detail drawer HTML to inspect the tables structure
+  // In HTML của drawer để phân tích cấu trúc bảng
   const tables = detailDrawer.locator('table');
   const tableCount = await tables.count();
-  console.log(`Found ${tableCount} tables in detail drawer.`);
+  console.log(`Tìm thấy ${tableCount} bảng trong drawer chi tiết.`);
   for (let i = 0; i < tableCount; i++) {
-    console.log(`--- TABLE ${i} ---`);
+    console.log(`--- BẢNG ${i} ---`);
     console.log(await tables.nth(i).innerText());
   }
 

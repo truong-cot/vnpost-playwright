@@ -10,23 +10,23 @@ test.describe('Authentication Flow', () => {
     const selectShopPage = new SelectShopPage(page);
     const dashboardPage = new DashboardPage(page);
 
-    // Step 1: Navigate and Login
+    // Bước 1: Điều hướng và Đăng nhập
     await loginPage.login(ENV.TEST_USERNAME, ENV.TEST_PASSWORD);
 
-    // Step 2: Verify Select Shop page loaded
+    // Bước 2: Xác nhận trang chọn Cửa hàng hiển thị thành công
     await expect(selectShopPage.pageHeader).toBeVisible();
 
-    // Step 3: Select the main role/shop
+    // Bước 3: Chọn vai trò/cửa hàng chính
     await selectShopPage.selectShop('Tổng công ty Bưu Điện Việt Nam');
 
-    // Step 4: Verify successful redirection to Dashboard and profile visibility (with 15s timeout to allow loading)
+    // Bước 4: Xác nhận chuyển hướng thành công tới Dashboard và hiển thị thông tin hồ sơ (chờ tối đa 15 giây để tải)
     await expect(dashboardPage.getUserProfileLocator('Đặng Bá Trường')).toBeVisible({ timeout: 15000 });
 
-    // Step 5: Navigate back to selection screen and logout
+    // Bước 5: Quay lại màn hình chọn cửa hàng và thực hiện Đăng xuất
     await dashboardPage.goToSelectShop();
     await selectShopPage.logout();
 
-    // Step 6: Verify navigation back to Login page
+    // Bước 6: Xác nhận đã quay lại trang Đăng nhập
     await expect(loginPage.usernameInput).toBeVisible();
   });
 });

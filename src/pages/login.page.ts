@@ -2,10 +2,10 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './base.page';
 
 /**
- * Page Object for the Login Page.
+ * Page Object cho Trang Đăng nhập.
  */
 export class LoginPage extends BasePage {
-  // Locators
+  // Các Locators
   public readonly usernameInput: Locator;
   public readonly passwordInput: Locator;
   public readonly loginButton: Locator;
@@ -18,9 +18,9 @@ export class LoginPage extends BasePage {
   }
 
   /**
-   * Performs the login operation.
-   * @param username The account login username/phone
-   * @param password The account password
+   * Thực hiện thao tác đăng nhập.
+   * @param username Tên đăng nhập/Số điện thoại tài khoản
+   * @param password Mật khẩu tài khoản
    */
   public async login(username: string, password: string): Promise<void> {
     await this.navigate('/');

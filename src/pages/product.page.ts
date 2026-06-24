@@ -2,10 +2,10 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './base.page';
 
 /**
- * Page Object for Product management and Add Product drawer.
+ * Page Object cho mục Quản lý Sản phẩm và drawer Thêm sản phẩm.
  */
 export class ProductPage extends BasePage {
-  // Locators
+  // Các Locators
   public readonly addNewButton: Locator;
   public readonly skuInput: Locator;
   public readonly barcodeInput: Locator;
@@ -13,7 +13,7 @@ export class ProductPage extends BasePage {
   public readonly variantNameInput: Locator;
   public readonly variantValueInput: Locator;
 
-  // Required fields locators
+  // Các Locators của các trường bắt buộc
   public readonly nameInput: Locator;
   public readonly categorySelect: Locator;
   public readonly barcodeSettingBtn: Locator;
@@ -33,7 +33,7 @@ export class ProductPage extends BasePage {
     const variantRow = this.page.locator('.ant-row', { has: this.variantNameInput }).first();
     this.variantValueInput = variantRow.locator('input.ant-select-input');
 
-    // Initialize required fields locators
+    // Khởi tạo các locators của trường bắt buộc
     this.nameInput = this.page.getByPlaceholder('Tên sản phẩm', { exact: true });
     this.categorySelect = this.page.getByRole('combobox', { name: '* Danh mục plus Thêm mới' });
     this.barcodeSettingBtn = this.page.locator('input#form_barCode').locator('..').locator('button');
@@ -45,33 +45,33 @@ export class ProductPage extends BasePage {
   }
 
   /**
-   * Clicks the "Thêm mới" button to open the Add Product drawer.
+   * Click vào nút "Thêm mới" để mở drawer form Thêm sản phẩm.
    */
   public async clickAddNew(): Promise<void> {
     await this.click(this.addNewButton);
   }
 
   /**
-   * Adds a product classification/variant.
-   * @param name The classification name (e.g. 'size')
-   * @param value The classification value (e.g. 'S')
+   * Thêm một phân loại/biến thể sản phẩm.
+   * @param name Tên phân loại (ví dụ: 'size')
+   * @param value Giá trị phân loại (ví dụ: 'S')
    */
   public async addVariant(name: string, value: string): Promise<void> {
     await this.click(this.addVariantButton);
     await this.fill(this.variantNameInput, name);
     
-    // Locate the select container within the same row and click to activate it
+    // Tìm select container trong cùng hàng và click để kích hoạt
     const variantRow = this.page.locator('.ant-row', { has: this.variantNameInput }).first();
     const selectBox = variantRow.locator('.ant-select').first();
     await this.click(selectBox, { force: true });
 
-    // Now that it is active, fill the value and press Enter
+    // Sau khi kích hoạt, điền giá trị và nhấn Enter
     await this.fill(this.variantValueInput, value);
     await this.variantValueInput.press('Enter');
   }
 
   /**
-   * Fills and submits the product creation form with all required fields.
+   * Điền thông tin và gửi form tạo sản phẩm với đầy đủ các trường bắt buộc.
    */
   public async createProduct(data: {
     name: string;
@@ -85,43 +85,43 @@ export class ProductPage extends BasePage {
   }): Promise<void> {
     await this.fill(this.nameInput, data.name);
     
-    // Select category (combobox search and select)
+    // Chọn danh mục (tìm kiếm combobox và click chọn)
     await this.click(this.categorySelect);
     await this.categorySelect.fill(data.category);
     
-    // Fix: Locate and click the category using the 'treeitem' role
+    // Sửa lỗi: Định vị và click chọn danh mục theo vai trò 'treeitem'
     await this.page.getByRole('treeitem', { name: data.category }).first().click();
 
     await this.fill(this.skuInput, data.sku);
 
-    // Auto-generate barcode using the setting button
+    // Tự động tạo barcode bằng nút cài đặt bên cạnh
     await this.click(this.barcodeSettingBtn);
 
     await this.fill(this.accountantCodeInput, data.accountantCode);
 
-    // Select VAT (combobox click and select)
+    // Chọn VAT (click combobox và chọn)
     await this.click(this.vatSelect);
     await this.page.locator('.ant-select-item-option').filter({ hasText: data.vat }).first().click();
 
-    // Select Product Type if specified
+    // Chọn Loại sản phẩm nếu được chỉ định
     if (data.productType) {
       await this.page.getByRole('radio', { name: data.productType }).click();
     }
 
-    // Select Distribution Type if specified
+    // Chọn Hình thức phân phối nếu được chỉ định
     if (data.distributionType) {
       await this.page.getByRole('radio', { name: data.distributionType }).click();
     }
 
-    // Fill unit input
+    // Điền đơn vị tính
     await this.fill(this.unitInput, data.unit);
 
-    // Submit form
+    // Gửi form xác nhận
     await this.click(this.confirmButton);
   }
 
   /**
-   * Clicks the "Thêm đơn vị quy đổi" button.
+   * Click vào nút "Thêm đơn vị quy đổi".
    */
   public async clickAddConversionUnit(): Promise<void> {
     const btn = this.page.locator('button:has-text("Thêm đơn vị quy đổi")');
@@ -130,7 +130,7 @@ export class ProductPage extends BasePage {
   }
 
   /**
-   * Fills a conversion unit row at a specific index.
+   * Điền thông tin hàng quy đổi tại một chỉ mục hàng cụ thể.
    */
   public async fillConversionRow(index: number, data: {
     name: string;
@@ -162,19 +162,18 @@ export class ProductPage extends BasePage {
     // 4. SKU
     await this.fill(row.locator('input[placeholder="Nhập SKU"]'), data.sku);
 
-    // 5. Barcode (auto-generate)
+    // 5. Barcode (tự động tạo)
     await this.click(row.locator('span.ant-input-affix-wrapper button').first());
     await this.page.waitForTimeout(200);
   }
 
   /**
-   * Searches for a product by its SKU.
+   * Tìm kiếm sản phẩm theo SKU.
    */
   public async searchBySku(sku: string): Promise<void> {
     await this.fill(this.searchSkuInput, sku);
     await this.searchSkuInput.press('Enter');
-    // Wait for list to reload
+    // Chờ danh sách tải lại dữ liệu lọc
     await this.page.waitForTimeout(1000);
   }
 }
-

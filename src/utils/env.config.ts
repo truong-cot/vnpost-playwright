@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
-// Load environment variables from .env file in project root
+// Nạp các biến môi trường từ file .env tại thư mục gốc của dự án
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 export const ENV = {

@@ -16,19 +16,19 @@ test('debug barcode auto generation', async ({ page }) => {
   await dashboardPage.navigateToProducts();
   await productPage.clickAddNew();
   
-  // Locate barcode input and the setting button next to it
+  // Định vị ô nhập barcode và nút cài đặt tạo mã tự động bên cạnh
   const barcodeInput = page.locator('input#form_barCode');
   const barcodeSettingBtn = page.locator('div:has(> input#form_barCode) + button, button:has(svg[data-icon="setting"]), button:has(.anticon-setting)').first();
 
-  console.log('Initial Barcode:', await barcodeInput.inputValue());
+  console.log('Barcode ban đầu:', await barcodeInput.inputValue());
   
-  // Click setting button to see if it generates barcode
-  // Wait, let's find the exact locator from Page Snapshot:
+  // Click vào nút setting để xem nó có tạo barcode tự động hay không
+  // Dựa vào Page Snapshot:
   // - textbox "* Mã barcode (sử dụng máy quét)"
   // - button "setting" [cursor=pointer]
   const settingBtn = page.locator('button').filter({ has: page.locator('span[aria-label="setting"]') }).first();
   await settingBtn.click();
   await page.waitForTimeout(500);
 
-  console.log('Barcode after clicking setting button:', await barcodeInput.inputValue());
+  console.log('Barcode sau khi click nút setting:', await barcodeInput.inputValue());
 });

@@ -1,0 +1,42 @@
+◇ injected env (3) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+
+Running 1 test using 1 worker
+
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+
+[1/1] [chromium] › tests/product/create-product-variant-conversion.spec.ts:9:7 › Product Variant and Unit Conversion Flows › Tạo sản phẩm có biến thể đồng thời áp dụng đơn vị quy đổi thành công
+  1) [chromium] › tests/product/create-product-variant-conversion.spec.ts:9:7 › Product Variant and Unit Conversion Flows › Tạo sản phẩm có biến thể đồng thời áp dụng đơn vị quy đổi thành công 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('[role="dialog"], .ant-drawer').filter({ hasText: 'Chi tiết sản phẩm' }).first().locator('.text-lg:has-text("Cấu hình") ~ .ant-table-wrapper').locator('.ant-table-expanded-row').first().locator('tbody tr.ant-table-row').first()
+    Expected substring: "cái"
+    Received string:    "SP-004-naulo-1782099995475lô1000449121"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" with timeout 5000ms
+      - waiting for locator('[role="dialog"], .ant-drawer').filter({ hasText: 'Chi tiết sản phẩm' }).first().locator('.text-lg:has-text("Cấu hình") ~ .ant-table-wrapper').locator('.ant-table-expanded-row').first().locator('tbody tr.ant-table-row').first()
+        14 × locator resolved to <tr class="ant-table-row ant-table-row-level-0">…</tr>
+           - unexpected value "SP-004-naulo-1782099995475lô1000449121"
+
+
+      176 |     const subRows1 = expandedRow1.locator('tbody tr.ant-table-row');
+      177 |     await expect(subRows1).toHaveCount(3);
+    > 178 |     await expect(subRows1.nth(0)).toContainText('cái');
+          |                                   ^
+      179 |     await expect(subRows1.nth(1)).toContainText('lô');
+      180 |     await expect(subRows1.nth(1)).toContainText(skuNauLo);
+      181 |     await expect(subRows1.nth(2)).toContainText('thùng');
+        at /home/dev/sfin/project/playwright-demo/tests/product/create-product-variant-conversion.spec.ts:178:35
+
+    Error Context: test-results/product-create-product-var-8e606-g-đơn-vị-quy-đổi-thành-công-chromium/error-context.md
+
+
+  1 failed
+    [chromium] › tests/product/create-product-variant-conversion.spec.ts:9:7 › Product Variant and Unit Conversion Flows › Tạo sản phẩm có biến thể đồng thời áp dụng đơn vị quy đổi thành công 
+
+  Serving HTML report at http://localhost:9323. Press Ctrl+C to quit.

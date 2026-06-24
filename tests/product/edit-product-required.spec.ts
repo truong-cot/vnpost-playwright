@@ -16,11 +16,11 @@ test.describe('Product Editing Flows', () => {
 
     const targetProductName = 'Sản phẩm mẫu-1781777412808';
 
-    // Step 1: Admin đăng nhập vào hệ thống
+    // Bước 1: Admin đăng nhập vào hệ thống
     await loginPage.login(ENV.TEST_USERNAME, ENV.TEST_PASSWORD);
     await selectShopPage.selectShop('Tổng công ty Bưu Điện Việt Nam');
 
-    // Step 2: Click chọn "Sản phẩm" -> "Sản phẩm"
+    // Bước 2: Click chọn "Sản phẩm" -> "Sản phẩm"
     await dashboardPage.navigateToProducts();
 
     // Tìm kiếm sản phẩm theo Tên sản phẩm
@@ -29,7 +29,7 @@ test.describe('Product Editing Flows', () => {
     await searchNameInput.press('Enter');
     await page.waitForTimeout(1000); // Chờ bảng tải lại
 
-    // Step 3: Tại dòng sản phẩm cần chỉnh sửa: Click chọn "Thao tác" -> "Xem chi tiết" -> "Sửa thông tin"
+    // Bước 3: Tại dòng sản phẩm cần chỉnh sửa: Click chọn "Thao tác" -> "Xem chi tiết" -> "Sửa thông tin"
     const productRow = page.locator('tr').filter({ hasText: targetProductName }).first();
     await expect(productRow).toBeVisible();
     
@@ -46,13 +46,13 @@ test.describe('Product Editing Flows', () => {
     // Click "Sửa thông tin"
     await detailDrawer.locator('button:has-text("Sửa thông tin")').click();
 
-    // Step 4: Xóa thông tin 1 hoặc nhiều trường bắt buộc
+    // Bước 4: Xóa thông tin 1 hoặc nhiều trường bắt buộc
     // Xóa Tên sản phẩm, SKU và Đơn vị tính
     await productPage.nameInput.fill('');
     await productPage.skuInput.fill('');
     await productPage.unitInput.fill('');
 
-    // Step 5: Click "Cập nhật" (hoặc Xác nhận tùy theo nhãn của hệ thống ở màn Edit)
+    // Bước 5: Click "Cập nhật" (hoặc Xác nhận tùy theo nhãn của hệ thống ở màn Edit)
     const updateButton = page.locator('button:has-text("Cập nhật"), button:has-text("Xác nhận")').first();
     await updateButton.click();
 

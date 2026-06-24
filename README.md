@@ -113,3 +113,42 @@ playwright-demo/
 1. **Locators**: Không hardcode các XPath/CSS selector dài và dễ vỡ. Hãy ưu tiên sử dụng các locator theo hướng người dùng như `getByRole()`, `getByLabel()`, `getByPlaceholder()`, `getByText()`.
 2. **Assertions**: Toàn bộ Assertions phải được đặt ở các file test (`*.spec.ts`), tuyệt đối không viết Assertion trong các file Page Objects (`*.page.ts`).
 3. **Smart Wait**: Tuyệt đối không sử dụng `page.waitForTimeout()` hoặc `setTimeout`. Hãy để Playwright tự động đợi thông qua các Web-First Assertions (`expect(locator).toBeVisible()`).
+
+---
+
+## 🛠️ Quy Trình Thêm & Chạy Autotest Mới (Dành cho Developer/QA mới)
+
+Để đảm bảo tính đồng bộ, độ ổn định của hệ thống và tuân thủ các quy tắc hiện có trong dự án, khi phát triển hoặc sửa đổi bất kỳ kịch bản kiểm thử nào, hãy nghiêm túc thực hiện theo các bước sau:
+
+### 1. Quy trình 3 bước phát triển kịch bản test mới:
+*   **Bước 1: Cập nhật Page Object (POM)**:
+    *   Tất cả các định vị phần tử (Locators) và hàm thao tác (Actions) mới phải được khai báo trong lớp Page tương ứng dưới thư mục `src/pages/` (ví dụ: `src/pages/pricing.page.ts`, `src/pages/customer.page.ts`).
+    *   *Không được* viết trực tiếp các CSS Selector/XPath phức tạp bên trong file kịch bản kiểm thử (`*.spec.ts`).
+*   **Bước 2: Viết kịch bản kiểm thử (Test Spec)**:
+    *   Tạo hoặc thêm trường hợp kiểm thử mới vào file spec tương ứng dưới thư mục `tests/` (ví dụ: `tests/pricing/pricing-list.spec.ts`).
+    *   Mỗi testcase cần ghi rõ mã kiểm thử (như `BANGGIA_35`, `BANGGIA_36`, `BANGGIA_37`...) và chú thích các bước rõ ràng bằng tiếng Việt.
+*   **Bước 3: Dịch toàn bộ chú thích (Comments) sang Tiếng Việt**:
+    *   Tất cả các comment, tài liệu JSDoc/TSDoc và log in ra console (`console.log`) trong cả file Page Object và file Test Spec bắt buộc phải viết **100% bằng Tiếng Việt**.
+
+### 2. Quy tắc chạy kiểm thử mặc định:
+Khi chạy kiểm thử trên môi trường Staging/UAT, hệ thống chỉ cho phép duy nhất một phiên đăng nhập hoạt động tại một thời điểm trên cùng một tài khoản. Do đó, **bắt buộc** phải chạy tuần tự (single worker) để tránh xung đột phiên dẫn đến các lỗi đăng xuất ngẫu nhiên.
+
+#### Lệnh chạy mặc định cho một Test Case cụ thể (Chế độ hiển thị trình duyệt - Headed):
+Sử dụng cờ `-g` (grep) để chạy đúng testcase vừa viết, kết hợp `--headed` và `--workers=1`:
+```bash
+npx playwright test tests/pricing/pricing-list.spec.ts -g "MÃ_TESTCASE" --project=chromium --headed --workers=1
+```
+*Ví dụ chạy testcase `BANGGIA_41`:*
+```bash
+npx playwright test tests/pricing/pricing-list.spec.ts -g BANGGIA_41 --project=chromium --headed --workers=1
+```
+
+#### Lệnh chạy mặc định cho toàn bộ một File Test:
+```bash
+npx playwright test tests/pricing/pricing-list.spec.ts --project=chromium --headed --workers=1
+```
+
+> [!IMPORTANT]
+> - Luôn thêm cờ `--workers=1` khi chạy để đảm bảo không chạy song song làm ảnh hưởng đến session đăng nhập.
+> - Sử dụng cờ `--disable-web-security` nếu gặp lỗi CORS trên browser khi gọi API.
+

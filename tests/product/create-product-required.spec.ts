@@ -19,17 +19,17 @@ test.describe('Product Creation Flows', () => {
     const vatRate = '8%';
     const unitName = 'cái';
 
-    // Step 1: Login and select shop
+    // Bước 1: Đăng nhập và chọn cửa hàng
     await loginPage.login(ENV.TEST_USERNAME, ENV.TEST_PASSWORD);
     await selectShopPage.selectShop('Tổng công ty Bưu Điện Việt Nam');
 
-    // Step 2: Navigate to Products page
+    // Bước 2: Điều hướng tới mục Sản phẩm
     await dashboardPage.navigateToProducts();
 
-    // Step 3: Open Add Product drawer
+    // Bước 3: Mở drawer Thêm mới sản phẩm
     await productPage.clickAddNew();
 
-    // Step 4: Create product with required fields
+    // Bước 4: Tạo sản phẩm mới với các trường bắt buộc
     await productPage.createProduct({
       name: productName,
       category: categoryName,
@@ -41,17 +41,17 @@ test.describe('Product Creation Flows', () => {
       distributionType: 'Mua bán'
     });
 
-    // Step 5: Verify success message
+    // Bước 5: Xác nhận thông báo thành công hiển thị
     const successMsg = page.locator('.ant-message-success, .ant-notification-notice').filter({ hasText: 'Thêm thành công' });
     await expect(successMsg).toBeVisible();
 
-    // Wait for the drawer to close
+    // Chờ cho drawer đóng lại hoàn toàn
     await expect(page.locator('text=Thêm sản phẩm')).not.toBeVisible();
 
-    // Step 6: Search for the created product in the list
+    // Bước 6: Tìm kiếm sản phẩm vừa tạo theo SKU trong danh sách
     await productPage.searchBySku(uniqueSku);
 
-    // Step 7: Verify row details in the list table
+    // Bước 7: Xác nhận chi tiết thông tin hiển thị trên bảng danh sách
     const productRow = page.locator('tr').filter({ hasText: uniqueSku }).first();
     await expect(productRow).toBeVisible();
     await expect(productRow).toContainText(productName);

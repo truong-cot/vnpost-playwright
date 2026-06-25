@@ -87,4 +87,18 @@ export class DashboardPage extends BasePage {
     }
     await this.click(subMenuItem);
   }
+
+  /**
+   * Điều hướng tới trang Phiếu đề xuất đặt hàng.
+   * Mở rộng menu danh mục 'Kho hàng' nếu đang ẩn, sau đó click vào sub-menu 'Phiếu đề xuất đặt hàng'.
+   */
+  public async navigateToPurchaseRequest(): Promise<void> {
+    const subMenuItem = this.page.locator('li.ant-menu-item:has-text("Phiếu đề xuất đặt hàng")').first();
+    const isVisible = await subMenuItem.isVisible();
+    if (!isVisible) {
+      const categoryMenu = this.page.locator('li.ant-menu-submenu:has-text("Kho hàng")').first();
+      await this.click(categoryMenu);
+    }
+    await this.click(subMenuItem);
+  }
 }

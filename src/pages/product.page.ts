@@ -22,7 +22,8 @@ export class ProductPage extends BasePage {
   public readonly unitInput: Locator;
   public readonly confirmButton: Locator;
   public readonly searchSkuInput: Locator;
-
+  public readonly searchNameInput: Locator;
+ 
   constructor(page: Page) {
     super(page);
     this.addNewButton = this.page.getByRole('button', { name: 'Thêm mới' });
@@ -32,7 +33,7 @@ export class ProductPage extends BasePage {
     this.variantNameInput = this.page.getByPlaceholder('Tên', { exact: true }).first();
     const variantRow = this.page.locator('.ant-row', { has: this.variantNameInput }).first();
     this.variantValueInput = variantRow.locator('input.ant-select-input');
-
+ 
     // Khởi tạo các locators của trường bắt buộc
     this.nameInput = this.page.getByPlaceholder('Tên sản phẩm', { exact: true });
     this.categorySelect = this.page.getByRole('combobox', { name: '* Danh mục plus Thêm mới' });
@@ -42,6 +43,7 @@ export class ProductPage extends BasePage {
     this.unitInput = this.page.getByPlaceholder('VD: ml, hộp, chai, thùng');
     this.confirmButton = this.page.getByRole('button', { name: 'Xác nhận' });
     this.searchSkuInput = this.page.getByPlaceholder('Tìm kiếm theo SKU');
+    this.searchNameInput = this.page.getByPlaceholder('Tìm kiếm theo tên');
   }
 
   /**
@@ -175,5 +177,47 @@ export class ProductPage extends BasePage {
     await this.searchSkuInput.press('Enter');
     // Chờ danh sách tải lại dữ liệu lọc
     await this.page.waitForTimeout(1000);
+  }
+
+  /**
+   * Tìm kiếm sản phẩm theo tên.
+   */
+  public async searchByName(name: string): Promise<void> {
+    await this.fill(this.searchNameInput, name);
+    await this.searchNameInput.press('Enter');
+    // Chờ danh sách tải lại dữ liệu lọc
+    await this.page.waitForTimeout(1000);
+  }
+
+  /**
+   * Lọc danh sách sản phẩm theo Trạng thái.
+   * @param status 'Kích hoạt' hoặc 'Ngừng kích hoạt'
+   */
+  public async filterByStatus(status: 'Kích hoạt' | 'Ngừng kích hoạt'): Promise<void> {
+    const statusSelect = this.page.locator('.ant-select').filter({ hasText: 'Trạng thái' }).first();
+    await this.click(statusSelect);
+    await this.page.waitForTimeout(500);
+
+    const option = this.page.locator('.ant-select-dropdown:visible .ant-select-item-option').filter({ hasText: status }).first();
+    await option.waitFor({ state: 'visible', timeout: 5000 });
+    await option.click();
+    // Chờ bảng dữ liệu lọc xong
+    await this.page.waitForTimeout(1500);
+  }
+
+  /**
+   * Lọc danh sách sản phẩm theo Hình thức phân phối.
+   * @param form 'Mua bán' hoặc 'Ký gửi'
+   */
+  public async filterByDistributionForm(form: 'Mua bán' | 'Ký gửi'): Promise<void> {
+    const formSelect = this.page.locator('.ant-select').filter({ hasText: 'Chọn hình thức phân phối' }).first();
+    await this.click(formSelect);
+    await this.page.waitForTimeout(500);
+
+    const option = this.page.locator('.ant-select-dropdown:visible .ant-select-item-option').filter({ hasText: form }).first();
+    await option.waitFor({ state: 'visible', timeout: 5000 });
+    await option.click();
+    // Chờ bảng dữ liệu lọc xong
+    await this.page.waitForTimeout(1500);
   }
 }
